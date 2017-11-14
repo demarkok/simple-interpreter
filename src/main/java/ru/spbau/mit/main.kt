@@ -1,14 +1,15 @@
 package ru.spbau.mit
 
-fun getGreeting(): String {
-    val words = mutableListOf<String>()
-    words.add("Hello,")
-    
-    words.add("world!")
-
-    return words.joinToString(separator = " ")
-}
+import ru.spbau.mit.evaluation.MutableContext
+import java.nio.file.Files
+import java.nio.file.Paths
 
 fun main(args: Array<String>) {
-    println(getGreeting())
+    val test1Path = "testSources/test2.la"
+
+    val s = String(Files.readAllBytes(Paths.get(test1Path)))
+
+    val interpreter: Interpreter = Interpreter()
+    val root = interpreter.parse(s)
+    root.evaluate(MutableContext(null))
 }
