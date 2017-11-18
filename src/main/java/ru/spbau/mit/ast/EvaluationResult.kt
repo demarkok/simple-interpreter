@@ -30,7 +30,7 @@ interface EvaluationResult {
     val value: Int?
 }
 
-class Value(override val value: Int) : EvaluationResult
+data class Value(override val value: Int) : EvaluationResult
 
 object None : EvaluationResult {
     override val value: Int? = null
