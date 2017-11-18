@@ -1,38 +1,35 @@
 package ru.spbau.mit.evaluation
 
+import java.io.OutputStream
+
 
 interface ContextInterface {
     fun resolveVariable(name: String): Variable?
     fun resolveFunction(name: String): Function?
     val parentContext: Context?
+    val outputStream: OutputStream
 }
 
 class Context(override val parentContext: Context?,
+              override val outputStream: OutputStream,
               private val variables: Map<String, Variable>,
               private val functions: Map<String, Function>) : ContextInterface {
 
-    override fun resolveVariable(name: String): Variable? {
-        return variables[name] ?: parentContext?.resolveVariable(name)
-    }
+    override fun resolveVariable(name: String): Variable? = variables[name] ?: parentContext?.resolveVariable(name)
 
-    override fun resolveFunction(name: String): Function? {
-        return functions[name] ?: parentContext?.resolveFunction(name)
-    }
+    override fun resolveFunction(name: String): Function? = functions[name] ?: parentContext?.resolveFunction(name)
 }
 
 class MutableContext(override val parentContext: Context?, // TODO: refactor: hide the implementation details (Maps)
+                     override val outputStream: OutputStream,
                      private val variables: MutableMap<String, Variable> = HashMap(),
                      private val functions: MutableMap<String, Function> = HashMap()) : ContextInterface {
 
-    constructor(parent: MutableContext) : this(parent.toImmutable())
+    constructor(parent: MutableContext) : this(parent.toImmutable(), parent.outputStream)
 
-    override fun resolveFunction(name: String): Function? {
-        return functions[name] ?: parentContext?.resolveFunction(name)
-    }
+    override fun resolveFunction(name: String): Function? = functions[name] ?: parentContext?.resolveFunction(name)
 
-    override fun resolveVariable(name: String): Variable? {
-        return variables[name] ?: parentContext?.resolveVariable(name)
-    }
+    override fun resolveVariable(name: String): Variable? = variables[name] ?: parentContext?.resolveVariable(name)
 
     fun addFunction(name: String, function: Function) {
         functions[name] = function
@@ -43,19 +40,17 @@ class MutableContext(override val parentContext: Context?, // TODO: refactor: hi
     }
 
     fun toImmutable(): Context {
-        val variableEntries = variables.entries.map { x -> x.toPair() }
-        val functionEntries = functions.entries.map { x -> x.toPair() }
 
-        val immutableVariables = mapOf<String, Variable>(*variables
+        val immutableVariables = mapOf(*variables
                 .entries
                 .map { x -> x.toPair() }
                 .toTypedArray())
 
-        val immutableFunctions = mapOf<String, Function>(*functions
+        val immutableFunctions = mapOf(*functions
                 .entries
                 .map { x -> x.toPair() }
                 .toTypedArray())
 
-        return Context(parentContext, immutableVariables, immutableFunctions)
+        return Context(parentContext, outputStream, immutableVariables, immutableFunctions)
     }
 }

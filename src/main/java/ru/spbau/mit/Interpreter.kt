@@ -59,9 +59,8 @@ class Interpreter {
                 return VariableDeclaration(name, value)
             }
 
-            override fun visitExpressionStatement(ctx: ExpressionStatementContext): Statement {
-                return ctx.expression().accept(ExpressionVisitor)
-            }
+            override fun visitExpressionStatement(ctx: ExpressionStatementContext): Statement =
+                    ctx.expression().accept(ExpressionVisitor)
 
             override fun visitWhileStatement(ctx: WhileStatementContext): Statement {
                 val condition: Expression = ctx.parExpression().expression().accept(ExpressionVisitor)
@@ -87,13 +86,11 @@ class Interpreter {
                 return VariableAssignment(name, value)
             }
 
-            override fun visitReturnStatement(ctx: ReturnStatementContext): Statement {
-                return Return(ctx.expression().accept(ExpressionVisitor))
-            }
+            override fun visitReturnStatement(ctx: ReturnStatementContext): Statement =
+                    Return(ctx.expression().accept(ExpressionVisitor))
 
-            override fun visitPrintlnStatement(ctx: PrintlnStatementContext): Statement {
-                return Println(ctx.arguments().expression().map { it.accept(ExpressionVisitor) })
-            }
+            override fun visitPrintlnStatement(ctx: PrintlnStatementContext): Statement =
+                    Println(ctx.arguments().expression().map { it.accept(ExpressionVisitor) })
         }
 
         object ExpressionVisitor : LanguageBaseVisitor<Expression>() {
@@ -111,9 +108,8 @@ class Interpreter {
                 return BinaryExpression(leftOperand, operator, rightOperand)
             }
 
-            override fun visitParenthesesExpression(ctx: ParenthesesExpressionContext): Expression {
-                return ctx.parExpression().expression().accept(ExpressionVisitor)
-            }
+            override fun visitParenthesesExpression(ctx: ParenthesesExpressionContext): Expression =
+                    ctx.parExpression().expression().accept(ExpressionVisitor)
 
             override fun visitFunctionCallExpression(ctx: FunctionCallExpressionContext): Expression {
                 val functionCall = ctx.functionCall()

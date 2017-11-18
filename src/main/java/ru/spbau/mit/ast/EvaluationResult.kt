@@ -1,4 +1,8 @@
-/*package ru.spbau.mit.ast
+/*
+TODO: remove it
+
+
+package ru.spbau.mit.ast
 
 
 interface EvaluationResult {
@@ -21,9 +25,7 @@ package ru.spbau.mit.ast
 
 
 interface EvaluationResult {
-    fun isPresent(): Boolean {
-        return value != null
-    }
+    fun isPresent(): Boolean = value != null
 
     val value: Int?
 }

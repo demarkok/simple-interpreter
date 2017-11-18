@@ -1,4 +1,4 @@
-package ru.spbau.mit.Exceptions
+package ru.spbau.mit.exceptions
 
 sealed class LanguageRuntimeException : Exception()
 

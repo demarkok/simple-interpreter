@@ -1,13 +1,13 @@
 package ru.spbau.mit.ast
 
-import ru.spbau.mit.Exceptions.FunctionIsNotDefinedException
-import ru.spbau.mit.Exceptions.RedeclarationException
-import ru.spbau.mit.Exceptions.UnexpectedReturnException
-import ru.spbau.mit.Exceptions.VariableIsNotDefinedException
 import ru.spbau.mit.evaluation.ContextInterface
 import ru.spbau.mit.evaluation.Function
 import ru.spbau.mit.evaluation.MutableContext
 import ru.spbau.mit.evaluation.Variable
+import ru.spbau.mit.exceptions.FunctionIsNotDefinedException
+import ru.spbau.mit.exceptions.RedeclarationException
+import ru.spbau.mit.exceptions.UnexpectedReturnException
+import ru.spbau.mit.exceptions.VariableIsNotDefinedException
 
 
 fun ContextInterface.resolveVariableOrThrow(name: String) =
@@ -32,6 +32,7 @@ data class File(val block: Block) : ASTEntity {
 
 class Block(private val statements: List<Statement>) : ASTEntity {
     override fun evaluate(context: MutableContext): EvaluationResult {
+        @Suppress("LoopToCallChain")
         for (statement in statements) {
             val result = statement.evaluate(context)
             if (result.isPresent()) {
@@ -111,15 +112,17 @@ data class VariableAssignment(private val name: String,
 
 data class Return(val expression: Expression) : Statement {
 
-    override fun evaluate(context: MutableContext): EvaluationResult {
-        return expression.evaluate(context)
-    }
+    override fun evaluate(context: MutableContext): EvaluationResult = expression.evaluate(context)
 }
 
 data class Println(val arguments: List<Expression>) : Statement {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
-        println((arguments.map({ it.evaluate(context).value }).toIntArray().joinToString(" ")))
+        val result = (arguments.map({ it.evaluate(context).value })
+                .toIntArray()
+                .joinToString(" ")
+                .plus("\n"))
+        context.outputStream.write(result.toByteArray())
         return None
     }
 }
@@ -134,7 +137,7 @@ data class FunctionCall(private val name: String,
 
     override fun evaluate(context: MutableContext): Value {
         val function = context.resolveFunctionOrThrow(name)
-        val callContext = MutableContext(function.declarationContext)
+        val callContext = MutableContext(function.declarationContext, context.outputStream)
         callContext.addFunction(name, function)
 
         arguments.map { it.evaluate(context) }
@@ -166,9 +169,7 @@ data class VariableIdentifier(private val name: String) : Expression {
 }
 
 data class Literal(private val value: Int) : Expression {
-    override fun evaluate(context: MutableContext): Value {
-        return Value(value)
-    }
+    override fun evaluate(context: MutableContext): Value = Value(value)
 
 }
 

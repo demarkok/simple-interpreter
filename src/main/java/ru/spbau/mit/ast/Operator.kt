@@ -5,18 +5,12 @@ typealias Op = Function2<Int, Int, Int>
 interface Operator : Op
 
 abstract class AbstractOperator(private val op: Op) : Operator {
-    override fun invoke(p1: Int, p2: Int): Int {
-        return op(p1, p2)
-    }
+    override fun invoke(p1: Int, p2: Int): Int = op(p1, p2)
 }
 
-fun Boolean.toInt(): Int {
-    return if (this) 1 else 0
-}
+fun Boolean.toInt(): Int = if (this) 1 else 0
 
-fun Int.toBoolean(): Boolean {
-    return this != 0
-}
+fun Int.toBoolean(): Boolean = this != 0
 
 object GT : AbstractOperator({ x, y -> (x > y).toInt() })
 object LT : AbstractOperator({ x, y -> (x < y).toInt() })

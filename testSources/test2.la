@@ -1,11 +1,12 @@
-var foo = 4
-
-fun foo(n) {
-    fun bar(m) {
-        return m + n
+fun fib(n) {
+    if (n <= 1) {
+        return 1
     }
-
-    return bar(1)
+    return fib(n - 1) + fib(n - 2)
 }
 
-println(foo(foo)) // prints 42
+var i = 1
+while (i <= 10) {
+    println(i, fib(i))
+    i = i + 1
+}
