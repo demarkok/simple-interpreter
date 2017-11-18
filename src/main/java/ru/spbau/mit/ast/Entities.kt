@@ -30,7 +30,7 @@ data class File(val block: Block) : ASTEntity {
     }
 }
 
-class Block(private val statements: List<Statement>) : ASTEntity {
+data class Block(private val statements: List<Statement>) : ASTEntity {
     override fun evaluate(context: MutableContext): EvaluationResult {
         @Suppress("LoopToCallChain")
         for (statement in statements) {
@@ -55,12 +55,12 @@ data class FunctionDeclaration(private val name: String,
 }
 
 data class VariableDeclaration(private val name: String,
-                               private val value: Expression) : Statement {
+                               private val value: Expression?) : Statement {
     override fun evaluate(context: MutableContext): EvaluationResult {
         if (context.resolveVariable(name) != null) {
             throw RedeclarationException()
         }
-        context.addVariable(name, Variable(value.evaluate(context).value))
+        context.addVariable(name, Variable(value?.evaluate(context)?.value ?: 0))
         return None
     }
 }

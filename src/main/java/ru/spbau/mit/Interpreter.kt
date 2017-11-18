@@ -54,7 +54,7 @@ class Interpreter {
                 val variableDeclaration = ctx.variableDeclaration()
 
                 val name: String = variableDeclaration.Identifier().text
-                val value: Expression = variableDeclaration.expression().accept(ExpressionVisitor)
+                val value: Expression? = variableDeclaration.expression()?.accept(ExpressionVisitor)
 
                 return VariableDeclaration(name, value)
             }

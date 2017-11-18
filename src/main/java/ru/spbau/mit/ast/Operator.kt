@@ -12,12 +12,12 @@ fun Boolean.toInt(): Int = if (this) 1 else 0
 
 fun Int.toBoolean(): Boolean = this != 0
 
-object GT : AbstractOperator({ x, y -> (x > y).toInt() })
-object LT : AbstractOperator({ x, y -> (x < y).toInt() })
-object Equal : AbstractOperator({ x, y -> (x == y).toInt() })
-object LE : AbstractOperator({ x, y -> (x <= y).toInt() })
-object GE : AbstractOperator({ x, y -> (x >= y).toInt() })
-object NotEqual : AbstractOperator({ x, y -> (x != y).toInt() })
+object Gt : AbstractOperator({ x, y -> (x > y).toInt() })
+object Lt : AbstractOperator({ x, y -> (x < y).toInt() })
+object Eq : AbstractOperator({ x, y -> (x == y).toInt() })
+object Le : AbstractOperator({ x, y -> (x <= y).toInt() })
+object Ge : AbstractOperator({ x, y -> (x >= y).toInt() })
+object Neq : AbstractOperator({ x, y -> (x != y).toInt() })
 object And : AbstractOperator({ x, y -> (x.toBoolean() && y.toBoolean()).toInt() })
 object Or : AbstractOperator({ x, y -> (x.toBoolean() || y.toBoolean()).toInt() })
 
@@ -30,12 +30,12 @@ object Mod : AbstractOperator({ x, y -> x % y })
 object OperatorFactory {
     fun createOperator(string: String): Operator {
         return when (string) {
-            ">" -> GT
-            "<" -> LT
-            "==" -> Equal
-            "<=" -> LE
-            ">=" -> GE
-            "!=" -> NotEqual
+            ">" -> Gt
+            "<" -> Lt
+            "==" -> Eq
+            "<=" -> Le
+            ">=" -> Ge
+            "!=" -> Neq
             "&&" -> And
             "||" -> Or
             "+" -> Add
