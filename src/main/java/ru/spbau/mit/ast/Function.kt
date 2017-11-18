@@ -1,6 +1,4 @@
-package ru.spbau.mit.evaluation
-
-import ru.spbau.mit.ast.Block
+package ru.spbau.mit.ast
 
 data class Function(val functionBlock: Block,
                     val arguments: List<String>,

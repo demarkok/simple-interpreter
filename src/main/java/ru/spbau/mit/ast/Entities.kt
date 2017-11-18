@@ -1,9 +1,5 @@
 package ru.spbau.mit.ast
 
-import ru.spbau.mit.evaluation.ContextInterface
-import ru.spbau.mit.evaluation.Function
-import ru.spbau.mit.evaluation.MutableContext
-import ru.spbau.mit.evaluation.Variable
 import ru.spbau.mit.exceptions.FunctionIsNotDefinedException
 import ru.spbau.mit.exceptions.RedeclarationException
 import ru.spbau.mit.exceptions.UnexpectedReturnException
