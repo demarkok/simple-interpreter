@@ -55,7 +55,7 @@ data class FunctionDeclaration(private val name: String,
 }
 
 data class VariableDeclaration(private val name: String,
-                               private val value: Expression?) : Statement {
+                               private val value: Expression? = null) : Statement {
     override fun evaluate(context: MutableContext): EvaluationResult {
         if (context.resolveVariable(name) != null) {
             throw RedeclarationException()
