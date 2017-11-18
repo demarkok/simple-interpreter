@@ -28,22 +28,20 @@ object Div : AbstractOperator({ x, y -> x / y })
 object Mod : AbstractOperator({ x, y -> x % y })
 
 object OperatorFactory {
-    fun createOperator(string: String): Operator {
-        return when (string) {
-            ">" -> Gt
-            "<" -> Lt
-            "==" -> Eq
-            "<=" -> Le
-            ">=" -> Ge
-            "!=" -> Neq
-            "&&" -> And
-            "||" -> Or
-            "+" -> Add
-            "-" -> Sub
-            "*" -> Mul
-            "/" -> Div
-            "%" -> Mod
-            else -> throw RuntimeException()
-        }
+    fun createOperator(string: String): Operator = when (string) {
+        ">" -> Gt
+        "<" -> Lt
+        "==" -> Eq
+        "<=" -> Le
+        ">=" -> Ge
+        "!=" -> Neq
+        "&&" -> And
+        "||" -> Or
+        "+" -> Add
+        "-" -> Sub
+        "*" -> Mul
+        "/" -> Div
+        "%" -> Mod
+        else -> throw RuntimeException()
     }
 }
