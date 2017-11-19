@@ -1,15 +1,11 @@
-# ДЗ01 - Fun programming language
+# A parser and interpreter for a fictional programming language
 
-**Дедлайн**: 2017.11.12 23:59 (полный балл), 2017.11.19 23:59 (50%)
-
-Необходимо реализовать интерпретатор простого языка программирования.
-
-## Синтаксис
+## Syntax
 ```
 FILE = BLOCK
 BLOCK = (STATEMENT)*
 BLOCK_WITH_BRACES = "{" BLOCK "}"
-STATEMENT = FUNCTION | VARIABLE | EXPRESSION | WHILE | IF | ASSIGNMENT | RETURN
+STATEMENT = FUNCTION | VARIABLE | EXPRESSION | WHILE | IF | ASSIGNMENT | RETURN | PRINTLN | READ
 FUNCTION = "fun" IDENTIFIER "(" PARAMETER_NAMES ")" BLOCK_WITH_BRACES
 VARIABLE = "var" IDENTIFIER ("=" EXPRESSION)?
 PARAMETER_NAMES = IDENTIFIER{,}
@@ -17,29 +13,26 @@ WHILE = "while" "(" EXPRESSION ")" BLOCK_WITH_BRACES
 IF = "if" "(" EXPRESSION ")" BLOCK_WITH_BRACES ("else" BLOCK_WITH_BRACES)?
 ASSIGNMENT = IDENTIFIER "=" EXPRESSION
 RETURN = "return" EXPRESSION
+PRINTLN = "println" "(" ARGUMENTS ")"
+READ = "read" "(" IDENTIFIER ")"
 EXPRESSION = FUNCTION_CALL | BINARY_EXPRESSION | IDENTIFIER | LITERAL | "(" EXPRESSION ")"
 FUNCTION_CALL = IDENTIFIER "(" ARGUMENTS ")"
 ARGUMENTS = EXPRESSION{","}
+BINARY_EXPRESSION = EXPRESSION OPERATOR EXPRESSION
+OPERATOR =  "+" | "-" | "*" | "/" | "%" | ">" | "<" | ">=" | "<=" | "==" | "!=" | "||" | "&&"
+IDENTIFIER = <like in C>
+LITERAL = <like decimal literal in Java>
 
-/*
-    Арифметическое выражение с операциями: +, -, *, /, %, >, <, >=, <=, ==, !=, ||, &&
-    Семантика и приоритеты операций примерно как в Си
-*/
-BINARY_EXPRESSION = <define-yourself>
-/* Идентификатор как в Си */
-IDENTIFIER = <define-yourself>
-/* Десятичный целочисленный литерал без ведущих нулей */
-LITERAL = <define-yourself>
 ```
 
-### Обозначения:
+### Contractions:
 ```
-X{Y} – возможно пустой список из X, разделенный Y
-(X)* – повторение X ноль или более раз
-(X)? – опциональное вхождение X
+X{Y} – possibly empty list of X's separeted by Y's
+(X)* – X repeated 0 or more times
+(X)? – optional X entrance
 ```
 
-## Семантика
+## Semantics
 - Должны быть поддержаны однострочные комментарии, как в языке Си (`//`).
 - Функции становятся доступны сразу после объявления, причем только внутри блока, где они объявлены.
 - Перегрузки функций (с одинаковыми именами) не поддерживаются.
@@ -50,7 +43,7 @@ X{Y} – возможно пустой список из X, разделенны
 - Если функция завершается без оператора return, считается что возвращаемое значение – 0.
 - Все остальное определяется исходя из здравого смысла :)
 
-## Примеры
+## Examples
 ```
 var a = 10
 var b = 20
