@@ -121,10 +121,10 @@ data class Return(val expression: Expression) : Statement {
 data class Println(val arguments: List<Expression>) : Statement {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
-        val result = (arguments.map({ it.evaluate(context).value })
+        val result = arguments.map { it.evaluate(context).value }
                 .toIntArray()
                 .joinToString(" ")
-                .plus("\n"))
+                .plus("\n")
         context.outputStream.write(result.toByteArray())
         return None
     }
