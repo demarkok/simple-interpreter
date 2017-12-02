@@ -16,7 +16,7 @@ interface ASTEntity {
     fun evaluate(context: MutableContext): EvaluationResult
 }
 
-data class File(val block: Block) : ASTEntity {
+data class File(private val block: Block) : ASTEntity {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         val result = block.evaluate(context)
@@ -104,11 +104,11 @@ data class VariableAssignment(private val name: String, private val value: Expre
     }
 }
 
-data class Return(val expression: Expression) : Statement {
+data class Return(private val expression: Expression) : Statement {
     override fun evaluate(context: MutableContext): EvaluationResult = expression.evaluate(context)
 }
 
-data class Println(val arguments: List<Expression>) : Statement {
+data class Println(private val arguments: List<Expression>) : Statement {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         val result = arguments.map { it.evaluate(context).value }
@@ -126,7 +126,7 @@ interface Expression : Statement {
 }
 
 data class FunctionCall(private val name: String,
-                        val arguments: List<Expression>
+                        private val arguments: List<Expression>
 ) : Expression {
 
     override fun evaluate(context: MutableContext): Value {
