@@ -2,12 +2,14 @@ package ru.spbau.mit
 
 import org.junit.Test
 import ru.spbau.mit.ast.*
+import ru.spbau.mit.ast.BinaryOperator.*
 import ru.spbau.mit.exceptions.FunctionIsNotDefinedException
 import ru.spbau.mit.exceptions.RedeclarationException
 import ru.spbau.mit.exceptions.UnexpectedReturnException
 import ru.spbau.mit.exceptions.VariableIsNotDefinedException
 import java.io.ByteArrayOutputStream
 import kotlin.test.assertEquals
+
 
 class InterpretationTest {
 
@@ -70,9 +72,9 @@ class InterpretationTest {
     fun whileTest() {
         val root = File(Block(listOf(
                 VariableDeclaration("i"),
-                While(BinaryExpression(VariableIdentifier("i"), Lt, Literal(3)), Block(listOf(
+                While(BinaryExpression(VariableIdentifier("i"), LT, Literal(3)), Block(listOf(
                         Println(listOf(VariableIdentifier("i"))),
-                        VariableAssignment("i", BinaryExpression(VariableIdentifier("i"), Add, Literal(1)))
+                        VariableAssignment("i", BinaryExpression(VariableIdentifier("i"), ADD, Literal(1)))
                 )))
         )))
         val stream = ByteArrayOutputStream()
@@ -155,19 +157,19 @@ class InterpretationTest {
     fun binaryExpressionTest() {
         val root = Block(listOf(
                 Println(listOf(
-                        BinaryExpression(Literal(10), Gt, Literal(20)),
-                        BinaryExpression(Literal(10), Lt, Literal(20)),
-                        BinaryExpression(Literal(10), Eq, Literal(20)),
-                        BinaryExpression(Literal(10), Le, Literal(20)),
-                        BinaryExpression(Literal(10), Ge, Literal(20)),
-                        BinaryExpression(Literal(10), Neq, Literal(20)),
-                        BinaryExpression(Literal(10), And, Literal(20)),
-                        BinaryExpression(Literal(10), Or, Literal(20)),
-                        BinaryExpression(Literal(10), Add, Literal(20)),
-                        BinaryExpression(Literal(10), Sub, Literal(20)),
-                        BinaryExpression(Literal(10), Mul, Literal(20)),
-                        BinaryExpression(Literal(10), Div, Literal(20)),
-                        BinaryExpression(Literal(10), Mod, Literal(20))
+                        BinaryExpression(Literal(10), GT, Literal(20)),
+                        BinaryExpression(Literal(10), LT, Literal(20)),
+                        BinaryExpression(Literal(10), EQ, Literal(20)),
+                        BinaryExpression(Literal(10), LE, Literal(20)),
+                        BinaryExpression(Literal(10), GE, Literal(20)),
+                        BinaryExpression(Literal(10), NEQ, Literal(20)),
+                        BinaryExpression(Literal(10), AND, Literal(20)),
+                        BinaryExpression(Literal(10), OR, Literal(20)),
+                        BinaryExpression(Literal(10), ADD, Literal(20)),
+                        BinaryExpression(Literal(10), SUB, Literal(20)),
+                        BinaryExpression(Literal(10), MUL, Literal(20)),
+                        BinaryExpression(Literal(10), DIV, Literal(20)),
+                        BinaryExpression(Literal(10), MOD, Literal(20))
                 ))
         ))
         val stream = ByteArrayOutputStream()
@@ -184,7 +186,7 @@ class InterpretationTest {
     fun varAndFunWithSameName() {
         val root = Block(listOf(
                 FunctionDeclaration("f", listOf("f"), Block(listOf(
-                        Return(BinaryExpression(VariableIdentifier("f"), Add, Literal(1)))
+                        Return(BinaryExpression(VariableIdentifier("f"), ADD, Literal(1)))
                 ))),
                 VariableDeclaration("f", Literal(239)),
                 Println(listOf(FunctionCall("f", listOf(VariableIdentifier("f"))),

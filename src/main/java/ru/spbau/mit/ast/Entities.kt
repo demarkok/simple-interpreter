@@ -154,7 +154,7 @@ data class FunctionCall(private val name: String,
 
 
 data class BinaryExpression(private val leftOperand: Expression,
-                            private val operator: Operator,
+                            private val operator: BinaryOperator,
                             private val rightOperand: Expression
 ) : Expression {
 

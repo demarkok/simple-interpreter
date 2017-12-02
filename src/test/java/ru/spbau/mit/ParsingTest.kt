@@ -2,8 +2,8 @@ package ru.spbau.mit
 
 import org.junit.Test
 import ru.spbau.mit.ast.*
+import ru.spbau.mit.ast.BinaryOperator.*
 import kotlin.test.assertEquals
-
 
 class ParsingTests {
 
@@ -162,19 +162,19 @@ class ParsingTests {
 
 
         val expectedRoot = File(Block(listOf(
-                BinaryExpression(Literal(1), Gt, Literal(0)),
-                BinaryExpression(Literal(1), Lt, Literal(0)),
-                BinaryExpression(Literal(1), Eq, Literal(0)),
-                BinaryExpression(Literal(1), Le, Literal(0)),
-                BinaryExpression(Literal(1), Ge, Literal(0)),
-                BinaryExpression(Literal(1), Neq, Literal(0)),
-                BinaryExpression(Literal(1), And, Literal(0)),
-                BinaryExpression(Literal(1), Or, Literal(0)),
-                BinaryExpression(Literal(1), Add, Literal(0)),
-                BinaryExpression(Literal(1), Sub, Literal(0)),
-                BinaryExpression(Literal(1), Mul, Literal(0)),
-                BinaryExpression(Literal(1), Div, Literal(0)),
-                BinaryExpression(Literal(1), Mod, Literal(0))
+                BinaryExpression(Literal(1), GT, Literal(0)),
+                BinaryExpression(Literal(1), LT, Literal(0)),
+                BinaryExpression(Literal(1), EQ, Literal(0)),
+                BinaryExpression(Literal(1), LE, Literal(0)),
+                BinaryExpression(Literal(1), GE, Literal(0)),
+                BinaryExpression(Literal(1), NEQ, Literal(0)),
+                BinaryExpression(Literal(1), AND, Literal(0)),
+                BinaryExpression(Literal(1), OR, Literal(0)),
+                BinaryExpression(Literal(1), ADD, Literal(0)),
+                BinaryExpression(Literal(1), SUB, Literal(0)),
+                BinaryExpression(Literal(1), MUL, Literal(0)),
+                BinaryExpression(Literal(1), DIV, Literal(0)),
+                BinaryExpression(Literal(1), MOD, Literal(0))
         )))
         assertEquals(expectedRoot, root)
     }
@@ -210,7 +210,7 @@ class ParsingTests {
         val root = parse(s)
         val expectedRoot = File(Block(listOf(
                 FunctionDeclaration("f", listOf("f"), Block(listOf(
-                        Return(BinaryExpression(VariableIdentifier("f"), Add, Literal(1)))
+                        Return(BinaryExpression(VariableIdentifier("f"), ADD, Literal(1)))
                 ))),
                 VariableDeclaration("f", Literal(239)),
                 Println(listOf(FunctionCall("f", listOf(VariableIdentifier("f"))),
@@ -243,23 +243,23 @@ class ParsingTests {
         val root = parse(s)
         val expectedRoot = File(Block(listOf(
                 FunctionDeclaration("fib", listOf("n"), Block(listOf(
-                        If(BinaryExpression(VariableIdentifier("n"), Le, Literal(1)), Block(listOf(
+                        If(BinaryExpression(VariableIdentifier("n"), LE, Literal(1)), Block(listOf(
                                 Return(Literal(1))
                         )), null),
                         Return(BinaryExpression(
                                 FunctionCall("fib",
-                                        listOf(BinaryExpression(VariableIdentifier("n"), Sub, Literal(1)))),
-                                Add,
+                                        listOf(BinaryExpression(VariableIdentifier("n"), SUB, Literal(1)))),
+                                ADD,
                                 FunctionCall("fib",
-                                        listOf(BinaryExpression(VariableIdentifier("n"), Sub, Literal(2)))))
+                                        listOf(BinaryExpression(VariableIdentifier("n"), SUB, Literal(2)))))
                         )
                 ))),
                 VariableDeclaration("i", Literal(1)),
-                While(BinaryExpression(VariableIdentifier("i"), Le, Literal(5)), Block(listOf(
+                While(BinaryExpression(VariableIdentifier("i"), LE, Literal(5)), Block(listOf(
                         Println(listOf(
                                 VariableIdentifier("i"),
                                 FunctionCall("fib", listOf(VariableIdentifier("i"))))),
-                        VariableAssignment("i", BinaryExpression(VariableIdentifier("i"), Add, Literal(1))
+                        VariableAssignment("i", BinaryExpression(VariableIdentifier("i"), ADD, Literal(1))
                         )))))))
 
         assertEquals(expectedRoot, root)
