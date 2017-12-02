@@ -10,20 +10,24 @@ interface ContextInterface {
     val outputStream: OutputStream
 }
 
-class Context(override val parentContext: Context?,
-              override val outputStream: OutputStream,
-              private val variables: Map<String, Variable>,
-              private val functions: Map<String, Function>) : ContextInterface {
+class Context(
+        override val parentContext: Context?,
+        override val outputStream: OutputStream,
+        private val variables: Map<String, Variable>,
+        private val functions: Map<String, Function>
+) : ContextInterface {
 
     override fun resolveVariable(name: String): Variable? = variables[name] ?: parentContext?.resolveVariable(name)
 
     override fun resolveFunction(name: String): Function? = functions[name] ?: parentContext?.resolveFunction(name)
 }
 
-class MutableContext(override val parentContext: Context?, // TODO: refactor: hide the implementation details (Maps)
-                     override val outputStream: OutputStream,
-                     private val variables: MutableMap<String, Variable> = HashMap(),
-                     private val functions: MutableMap<String, Function> = HashMap()) : ContextInterface {
+class MutableContext( // TODO: refactor: hide the implementation details (Maps)
+        override val parentContext: Context?,
+        override val outputStream: OutputStream,
+        private val variables: MutableMap<String, Variable> = HashMap(),
+        private val functions: MutableMap<String, Function> = HashMap()
+) : ContextInterface {
 
     constructor(parent: MutableContext) : this(parent.toImmutable(), parent.outputStream)
 

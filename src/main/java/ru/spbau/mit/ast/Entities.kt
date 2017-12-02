@@ -17,6 +17,7 @@ interface ASTEntity {
 }
 
 data class File(val block: Block) : ASTEntity {
+
     override fun evaluate(context: MutableContext): EvaluationResult {
         val result = block.evaluate(context)
         if (result.isPresent()) {
@@ -27,6 +28,7 @@ data class File(val block: Block) : ASTEntity {
 }
 
 data class Block(private val statements: List<Statement>) : ASTEntity {
+
     override fun evaluate(context: MutableContext): EvaluationResult {
         @Suppress("LoopToCallChain")
         for (statement in statements) {
@@ -41,9 +43,12 @@ data class Block(private val statements: List<Statement>) : ASTEntity {
 
 interface Statement : ASTEntity
 
-data class FunctionDeclaration(private val name: String,
-                               private val parameterNames: List<String>,
-                               private val body: Block) : Statement {
+data class FunctionDeclaration(
+        private val name: String,
+        private val parameterNames: List<String>,
+        private val body: Block
+) : Statement {
+
     override fun evaluate(context: MutableContext): EvaluationResult {
         context.addFunction(name, Function(body, parameterNames, context.toImmutable()))
         return None
@@ -51,7 +56,9 @@ data class FunctionDeclaration(private val name: String,
 }
 
 data class VariableDeclaration(private val name: String,
-                               private val value: Expression? = null) : Statement {
+                               private val value: Expression? = null
+) : Statement {
+
     override fun evaluate(context: MutableContext): EvaluationResult {
         if (context.resolveVariable(name) != null) {
             throw RedeclarationException()
@@ -62,7 +69,8 @@ data class VariableDeclaration(private val name: String,
 }
 
 data class While(private val condition: Expression,
-                 private val body: Block) : Statement {
+                 private val body: Block
+) : Statement {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         while (condition.evaluate(context).value != 0) {
@@ -78,7 +86,8 @@ data class While(private val condition: Expression,
 
 data class If(private val condition: Expression,
               private val body: Block,
-              private val elseBody: Block?) : Statement {
+              private val elseBody: Block?
+) : Statement {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         if (condition.evaluate(context).value != 0) {
@@ -96,8 +105,7 @@ data class If(private val condition: Expression,
     }
 }
 
-data class VariableAssignment(private val name: String,
-                              private val value: Expression) : Statement {
+data class VariableAssignment(private val name: String, private val value: Expression) : Statement {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         val variable = context.resolveVariableOrThrow(name)
@@ -107,7 +115,6 @@ data class VariableAssignment(private val name: String,
 }
 
 data class Return(val expression: Expression) : Statement {
-
     override fun evaluate(context: MutableContext): EvaluationResult = expression.evaluate(context)
 }
 
@@ -129,7 +136,8 @@ interface Expression : Statement {
 }
 
 data class FunctionCall(private val name: String,
-                        val arguments: List<Expression>) : Expression {
+                        val arguments: List<Expression>
+) : Expression {
 
     override fun evaluate(context: MutableContext): Value {
         val function = context.resolveFunctionOrThrow(name)
@@ -147,7 +155,8 @@ data class FunctionCall(private val name: String,
 
 data class BinaryExpression(private val leftOperand: Expression,
                             private val operator: Operator,
-                            private val rightOperand: Expression) : Expression {
+                            private val rightOperand: Expression
+) : Expression {
 
     override fun evaluate(context: MutableContext): Value {
         val leftValue = leftOperand.evaluate(context).value
