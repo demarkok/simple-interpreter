@@ -13,10 +13,14 @@ fun ContextInterface.resolveFunctionOrThrow(name: String) =
         this.resolveFunction(name) ?: throw FunctionIsNotDefinedException()
 
 interface ASTEntity {
+    fun <T> accept(visitor: ASTVisitor<T>): T
     fun evaluate(context: MutableContext): EvaluationResult
 }
 
 data class File(val block: Block) : ASTEntity {
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         val result = block.evaluate(context)
@@ -27,7 +31,10 @@ data class File(val block: Block) : ASTEntity {
     }
 }
 
-data class Block(private val statements: List<Statement>) : ASTEntity {
+data class Block(val statements: List<Statement>) : ASTEntity {
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         @Suppress("LoopToCallChain")
@@ -44,10 +51,14 @@ data class Block(private val statements: List<Statement>) : ASTEntity {
 interface Statement : ASTEntity
 
 data class FunctionDeclaration(
-        private val name: String,
-        private val parameterNames: List<String>,
-        private val body: Block
+        val name: String,
+        val parameterNames: List<String>,
+        val body: Block
 ) : Statement {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         context.addFunction(name, Function(body, parameterNames, context.toImmutable()))
@@ -55,9 +66,13 @@ data class FunctionDeclaration(
     }
 }
 
-data class VariableDeclaration(private val name: String,
-                               private val value: Expression? = null
+data class VariableDeclaration(val name: String,
+                               val value: Expression? = null
 ) : Statement {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         if (context.resolveVariable(name) != null) {
@@ -68,9 +83,13 @@ data class VariableDeclaration(private val name: String,
     }
 }
 
-data class While(private val condition: Expression,
-                 private val body: Block
+data class While(val condition: Expression,
+                 val body: Block
 ) : Statement {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         while (condition.evaluate(context).value != 0) {
@@ -84,10 +103,14 @@ data class While(private val condition: Expression,
 
 }
 
-data class If(private val condition: Expression,
-              private val body: Block,
-              private val elseBody: Block?
+data class If(val condition: Expression,
+              val body: Block,
+              val elseBody: Block?
 ) : Statement {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         val actualBlock = if (condition.evaluate(context).value != 0) body else elseBody
@@ -95,7 +118,11 @@ data class If(private val condition: Expression,
     }
 }
 
-data class VariableAssignment(private val name: String, private val value: Expression) : Statement {
+data class VariableAssignment(val name: String, val value: Expression) : Statement {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         val variable = context.resolveVariableOrThrow(name)
@@ -105,10 +132,19 @@ data class VariableAssignment(private val name: String, private val value: Expre
 }
 
 data class Return(val expression: Expression) : Statement {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
+
     override fun evaluate(context: MutableContext): EvaluationResult = expression.evaluate(context)
 }
 
 data class Println(val arguments: List<Expression>) : Statement {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
 
     override fun evaluate(context: MutableContext): EvaluationResult {
         val result = arguments.map { it.evaluate(context).value }
@@ -129,6 +165,10 @@ data class FunctionCall(private val name: String,
                         val arguments: List<Expression>
 ) : Expression {
 
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
+
     override fun evaluate(context: MutableContext): Value {
         val function = context.resolveFunctionOrThrow(name)
         val callContext = MutableContext(function.declarationContext, context.outputStream)
@@ -148,6 +188,10 @@ data class BinaryExpression(private val leftOperand: Expression,
                             private val rightOperand: Expression
 ) : Expression {
 
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
+
     override fun evaluate(context: MutableContext): Value {
         val leftValue = leftOperand.evaluate(context).value
         val rightValue = rightOperand.evaluate(context).value
@@ -157,6 +201,10 @@ data class BinaryExpression(private val leftOperand: Expression,
 
 data class VariableIdentifier(private val name: String) : Expression {
 
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
+
     override fun evaluate(context: MutableContext): Value {
         val variable = context.resolveVariableOrThrow(name)
         return Value(variable.value)
@@ -164,11 +212,10 @@ data class VariableIdentifier(private val name: String) : Expression {
 }
 
 data class Literal(private val value: Int) : Expression {
+
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
+
     override fun evaluate(context: MutableContext): Value = Value(value)
-
 }
-
-
-
-
-
