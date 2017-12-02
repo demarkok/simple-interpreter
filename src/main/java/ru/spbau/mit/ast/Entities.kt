@@ -90,18 +90,8 @@ data class If(private val condition: Expression,
 ) : Statement {
 
     override fun evaluate(context: MutableContext): EvaluationResult {
-        if (condition.evaluate(context).value != 0) {
-            val result = body.evaluate(MutableContext(context))
-            if (result.isPresent()) {
-                return result
-            }
-        } else if (elseBody != null) {
-            val result = elseBody.evaluate(MutableContext(context))
-            if (result.isPresent()) {
-                return result
-            }
-        }
-        return None
+        val actualBlock = if (condition.evaluate(context).value != 0) body else elseBody
+        return actualBlock?.evaluate(MutableContext(context)) ?: None
     }
 }
 
