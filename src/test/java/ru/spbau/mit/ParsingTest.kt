@@ -5,7 +5,7 @@ import ru.spbau.mit.ast.*
 import ru.spbau.mit.ast.BinaryOperator.*
 import kotlin.test.assertEquals
 
-class ParsingTests {
+class ParsingTest {
 
     @Test
     fun emptyTest() {
