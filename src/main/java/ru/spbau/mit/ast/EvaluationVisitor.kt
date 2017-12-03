@@ -54,7 +54,7 @@ class EvaluationVisitor(context: MutableContext) : ASTVisitor<EvaluationResult> 
         val condition = whileStatement.condition
         val body = whileStatement.body
 
-        while (condition.evaluate(topContext()).value != 0) {
+        while (condition.accept(this).value != 0) {
             val result = withNewContext(MutableContext(topContext())) { body.accept(this) }
             if (result.isPresent()) {
                 return result
@@ -77,32 +77,63 @@ class EvaluationVisitor(context: MutableContext) : ASTVisitor<EvaluationResult> 
         val value = variableAssignment.value
 
         val variable = topContext().resolveVariableOrThrow(name)
-        variable.value = value.accept(this).value
+        variable.value = value.accept(this).value!!
         return None
     }
 
     override fun visit(returnStatement: Return): EvaluationResult {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val expression = returnStatement.expression
+        return expression.accept(this)
     }
 
     override fun visit(println: Println): EvaluationResult {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val arguments = println.arguments
+        val result = arguments.map { it.accept(this).value!! }
+                .toIntArray()
+                .joinToString(" ")
+                .plus("\n")
+        topContext().outputStream.write(result.toByteArray())
+        return None
     }
 
     override fun visit(binaryExpression: BinaryExpression): EvaluationResult {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val leftOperand = binaryExpression.leftOperand
+        val operator = binaryExpression.operator
+        val rightOperand = binaryExpression.rightOperand
+
+        val leftValue = leftOperand.accept(this).value!!
+        val rightValue = rightOperand.accept(this).value!!
+        return Value(operator(leftValue, rightValue))
+
     }
 
     override fun visit(functionCall: FunctionCall): EvaluationResult {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val name = functionCall.name
+        val arguments = functionCall.arguments
+
+        val function = topContext().resolveFunctionOrThrow(name)
+
+        val callContext = MutableContext(function.declarationContext, topContext().outputStream)
+        callContext.addFunction(name, function)
+
+        arguments.map { it.accept(this) }
+                .zip(function.arguments)
+                .forEach { callContext.addVariable(it.second, Variable(it.first.value!!)) }
+
+        return withNewContext(callContext) {
+            function.functionBlock.accept(this) as? Value ?: Value(0)
+        }
     }
 
     override fun visit(variableIdentifier: VariableIdentifier): EvaluationResult {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val name = variableIdentifier.name
+        val variable = topContext().resolveVariableOrThrow(name)
+        return Value(variable.value)
     }
 
     override fun visit(literal: Literal): EvaluationResult {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val value = literal.value
+        return Value(value)
     }
 
     private fun <T> withNewContext(newContext: MutableContext, block: () -> T): T {

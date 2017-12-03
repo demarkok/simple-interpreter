@@ -19,7 +19,7 @@ class InterpretationTest {
         val root = File(Block(emptyList()))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(None, result)
@@ -31,7 +31,7 @@ class InterpretationTest {
         val root = VariableDeclaration("a", Literal(10))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(None, result)
@@ -46,7 +46,7 @@ class InterpretationTest {
         ))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(Value(0), result)
@@ -61,7 +61,7 @@ class InterpretationTest {
                 Return(Literal(2)))))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(None, result)
@@ -79,7 +79,7 @@ class InterpretationTest {
         )))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(None, result)
@@ -95,7 +95,7 @@ class InterpretationTest {
         ))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(Value(4), result)
@@ -113,7 +113,7 @@ class InterpretationTest {
         ))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(Value(5), result)
@@ -129,7 +129,7 @@ class InterpretationTest {
         ))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(Value(10), result)
@@ -146,7 +146,7 @@ class InterpretationTest {
         ))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(Value(239), result)
@@ -174,7 +174,7 @@ class InterpretationTest {
         ))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(None, result)
@@ -195,7 +195,7 @@ class InterpretationTest {
         ))
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
         assertEquals(None, result)
@@ -207,7 +207,7 @@ class InterpretationTest {
         val root = Println(emptyList())
         val stream = ByteArrayOutputStream()
 
-        val result = root.evaluate(MutableContext(null, stream))
+        val result = root.accept(EvaluationVisitor(MutableContext(null, stream)))
         val output = stream.toString()
 
 
@@ -220,7 +220,7 @@ class InterpretationTest {
         val root = File(Block(listOf(Return(Literal(1)))))
         val stream = ByteArrayOutputStream()
 
-        root.evaluate(MutableContext(null, stream))
+        root.accept(EvaluationVisitor(MutableContext(null, stream)))
     }
 
     @Test(expected = RedeclarationException::class)
@@ -231,7 +231,7 @@ class InterpretationTest {
         )))
         val stream = ByteArrayOutputStream()
 
-        root.evaluate(MutableContext(null, stream))
+        root.accept(EvaluationVisitor(MutableContext(null, stream)))
     }
 
     @Test(expected = VariableIsNotDefinedException::class)
@@ -241,7 +241,7 @@ class InterpretationTest {
         )))
         val stream = ByteArrayOutputStream()
 
-        root.evaluate(MutableContext(null, stream))
+        root.accept(EvaluationVisitor(MutableContext(null, stream)))
     }
 
 
@@ -252,7 +252,7 @@ class InterpretationTest {
         )))
         val stream = ByteArrayOutputStream()
 
-        root.evaluate(MutableContext(null, stream))
+        root.accept(EvaluationVisitor(MutableContext(null, stream)))
     }
 
 }
