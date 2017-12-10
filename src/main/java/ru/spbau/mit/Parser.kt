@@ -4,6 +4,7 @@ import com.google.common.primitives.Ints
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import ru.spbau.mit.ast.*
+import ru.spbau.mit.ast.BinaryOperator.Companion.byString
 import ru.spbau.mit.parser.LanguageBaseVisitor
 import ru.spbau.mit.parser.LanguageLexer
 import ru.spbau.mit.parser.LanguageParser
@@ -101,7 +102,7 @@ private object ExpressionVisitor : LanguageBaseVisitor<Expression>() {
     override fun visitBinaryExpression(ctx: BinaryExpressionContext): Expression {
         val leftOperand: Expression = ctx.leftOperand.accept(ExpressionVisitor)
         val rightOperand: Expression = ctx.rightOperand.accept(ExpressionVisitor)
-        val operator = OperatorFactory.createOperator(ctx.operator.text)
+        val operator = byString(ctx.operator.text)
 
         return BinaryExpression(leftOperand, operator, rightOperand)
     }
