@@ -1,4 +1,4 @@
-# A parser and interpreter for a fictional programming language
+# Parser and interpreter for a fictional programming language
 
 ## Syntax
 ```
