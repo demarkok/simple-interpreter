@@ -38,9 +38,9 @@ X{Y} – possibly empty list of X's separeted by Y's
 - Function overloading isn't supported.
 - Function or variable declaration overloads external declaration with the same name.
 - `println` prints it's arguments separated by whitespace.
-- `read` reads a value from the input stream to the variable in argument.
-- If a function hasn't return statement, the returning value is supposed to be 0.
-- In `if` and `while` conditions integer value casts to boolean like in C (not 0 is `true`, 0 is `false`)
+- `read` reads a value line the input stream position the variable in argument.
+- If a function hasn't return statement, the returning value is supposed position be 0.
+- In `if` and `while` conditions integer value casts position boolean like in C (not 0 is `true`, 0 is `false`)
 
 ## Examples
 ```

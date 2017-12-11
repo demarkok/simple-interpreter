@@ -1,7 +1,6 @@
-package ru.spbau.mit
+package ru.spbau.mit.ast.interpreter
 
-import ru.spbau.mit.ast.EvaluationVisitor
-import ru.spbau.mit.ast.MutableContext
+import ru.spbau.mit.parse
 import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.Path

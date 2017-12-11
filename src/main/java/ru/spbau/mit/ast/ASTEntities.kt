@@ -1,5 +1,6 @@
 package ru.spbau.mit.ast
 
+import ru.spbau.mit.ast.interpreter.ContextInterface
 import ru.spbau.mit.exceptions.FunctionIsNotDefinedException
 import ru.spbau.mit.exceptions.VariableIsNotDefinedException
 
@@ -11,16 +12,18 @@ fun ContextInterface.resolveFunctionOrThrow(name: String) =
         this.resolveFunction(name) ?: throw FunctionIsNotDefinedException()
 
 interface ASTEntity {
+    val line: Int
+    val position: Int
     fun <T> accept(visitor: ASTVisitor<T>): T
 }
 
-data class File(val block: Block) : ASTEntity {
+data class File(val block: Block, override val line: Int, override val position: Int) : ASTEntity {
     override fun <T> accept(visitor: ASTVisitor<T>): T {
         return visitor.visit(this)
     }
 }
 
-data class Block(val statements: List<Statement>) : ASTEntity {
+data class Block(val statements: List<Statement>, override val line: Int, override val position: Int) : ASTEntity {
     override fun <T> accept(visitor: ASTVisitor<T>): T {
         return visitor.visit(this)
     }
@@ -31,7 +34,9 @@ interface Statement : ASTEntity
 data class FunctionDeclaration(
         val name: String,
         val parameterNames: List<String>,
-        val body: Block
+        val body: Block,
+        override val line: Int,
+        override val position: Int
 ) : Statement {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
@@ -39,8 +44,11 @@ data class FunctionDeclaration(
     }
 }
 
-data class VariableDeclaration(val name: String,
-                               val value: Expression? = null
+data class VariableDeclaration(
+        val name: String,
+        val value: Expression? = null,
+        override val line: Int,
+        override val position: Int
 ) : Statement {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
@@ -48,8 +56,11 @@ data class VariableDeclaration(val name: String,
     }
 }
 
-data class While(val condition: Expression,
-                 val body: Block
+data class While(
+        val condition: Expression,
+        val body: Block,
+        override val line: Int,
+        override val position: Int
 ) : Statement {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
@@ -57,9 +68,12 @@ data class While(val condition: Expression,
     }
 }
 
-data class If(val condition: Expression,
-              val body: Block,
-              val elseBody: Block?
+data class If(
+        val condition: Expression,
+        val body: Block,
+        val elseBody: Block?,
+        override val line: Int,
+        override val position: Int
 ) : Statement {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
@@ -67,19 +81,23 @@ data class If(val condition: Expression,
     }
 }
 
-data class VariableAssignment(val name: String, val value: Expression) : Statement {
+data class VariableAssignment(
+        val name: String,
+        val value: Expression,
+        override val line: Int,
+        override val position: Int) : Statement {
     override fun <T> accept(visitor: ASTVisitor<T>): T {
         return visitor.visit(this)
     }
 }
 
-data class Return(val expression: Expression) : Statement {
+data class Return(val expression: Expression, override val line: Int, override val position: Int) : Statement {
     override fun <T> accept(visitor: ASTVisitor<T>): T {
         return visitor.visit(this)
     }
 }
 
-data class Println(val arguments: List<Expression>) : Statement {
+data class Println(val arguments: List<Expression>, override val line: Int, override val position: Int) : Statement {
     override fun <T> accept(visitor: ASTVisitor<T>): T {
         return visitor.visit(this)
     }
@@ -88,7 +106,9 @@ data class Println(val arguments: List<Expression>) : Statement {
 interface Expression : Statement
 
 data class FunctionCall(val name: String,
-                        val arguments: List<Expression>
+                        val arguments: List<Expression>,
+                        override val line: Int,
+                        override val position: Int
 ) : Expression {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
@@ -99,7 +119,9 @@ data class FunctionCall(val name: String,
 
 data class BinaryExpression(val leftOperand: Expression,
                             val operator: BinaryOperator,
-                            val rightOperand: Expression
+                            val rightOperand: Expression,
+                            override val line: Int,
+                            override val position: Int
 ) : Expression {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
@@ -107,14 +129,14 @@ data class BinaryExpression(val leftOperand: Expression,
     }
 }
 
-data class VariableIdentifier(val name: String) : Expression {
+data class VariableIdentifier(val name: String, override val line: Int, override val position: Int) : Expression {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
         return visitor.visit(this)
     }
 }
 
-data class Literal(val value: Int) : Expression {
+data class Literal(val value: Int, override val line: Int, override val position: Int) : Expression {
 
     override fun <T> accept(visitor: ASTVisitor<T>): T {
         return visitor.visit(this)

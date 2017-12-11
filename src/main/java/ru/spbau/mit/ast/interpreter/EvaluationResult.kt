@@ -1,4 +1,4 @@
-package ru.spbau.mit.ast
+package ru.spbau.mit.ast.interpreter
 
 
 interface EvaluationResult {

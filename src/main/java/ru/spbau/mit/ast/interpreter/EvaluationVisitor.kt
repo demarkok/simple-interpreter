@@ -1,5 +1,7 @@
-package ru.spbau.mit.ast
+package ru.spbau.mit.ast.interpreter
 
+import ru.spbau.mit.ast.*
+import ru.spbau.mit.ast.ASTVisitor
 import ru.spbau.mit.exceptions.RedeclarationException
 import ru.spbau.mit.exceptions.UnexpectedReturnException
 

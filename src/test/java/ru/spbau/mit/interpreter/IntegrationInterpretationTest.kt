@@ -1,11 +1,12 @@
-package ru.spbau.mit
+package ru.spbau.mit.interpreter
 
 import org.junit.Test
+import ru.spbau.mit.ast.interpreter.interpretFile
 import java.io.ByteArrayOutputStream
 import java.nio.file.Paths
 import kotlin.test.assertEquals
 
-class ComplexTest {
+class IntegrationInterpretationTest {
     @Test
     fun fibonacciTest() {
         val outputStream = ByteArrayOutputStream()

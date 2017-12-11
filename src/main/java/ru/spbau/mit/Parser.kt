@@ -25,7 +25,7 @@ fun parse(sourceCode: String): File {
 private object FileVisitor : LanguageBaseVisitor<File>() {
     override fun visitFile(ctx: FileContext): File? {
         val blockVisitor = BlockVisitor
-        return File(ctx.block().accept(blockVisitor))
+        return File(ctx.block().accept(blockVisitor), ctx.start.line, ctx.start.charPositionInLine)
     }
 }
 
@@ -33,7 +33,7 @@ private object FileVisitor : LanguageBaseVisitor<File>() {
 private object BlockVisitor : LanguageBaseVisitor<Block>() {
     override fun visitBlock(ctx: BlockContext): Block {
         val statementVisitor = StatementVisitor
-        return Block(ctx.statement().map { it.accept(statementVisitor) })
+        return Block(ctx.statement().map { it.accept(statementVisitor) }, ctx.start.line, ctx.start.charPositionInLine)
     }
 }
 
@@ -46,7 +46,7 @@ private object StatementVisitor : LanguageBaseVisitor<Statement>() {
         val parameters: List<String> = functionDeclaration.parameterNames().Identifier().map { it.text }
         val body: Block = functionDeclaration.blockWithBraces().block().accept(BlockVisitor)
 
-        return FunctionDeclaration(name, parameters, body)
+        return FunctionDeclaration(name, parameters, body, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitVariableDeclarationStatement(ctx: VariableDeclarationStatementContext): Statement {
@@ -55,7 +55,7 @@ private object StatementVisitor : LanguageBaseVisitor<Statement>() {
         val name: String = variableDeclaration.Identifier().text
         val value: Expression? = variableDeclaration.expression()?.accept(ExpressionVisitor)
 
-        return VariableDeclaration(name, value)
+        return VariableDeclaration(name, value, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitExpressionStatement(ctx: ExpressionStatementContext): Statement =
@@ -65,7 +65,7 @@ private object StatementVisitor : LanguageBaseVisitor<Statement>() {
         val condition: Expression = ctx.parExpression().expression().accept(ExpressionVisitor)
         val body: Block = ctx.blockWithBraces().block().accept(BlockVisitor)
 
-        return While(condition, body)
+        return While(condition, body, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitIfStatement(ctx: IfStatementContext): Statement {
@@ -76,27 +76,29 @@ private object StatementVisitor : LanguageBaseVisitor<Statement>() {
         val body: Block = blocks[0]
         val elseBody: Block? = blocks.elementAtOrNull(1)
 
-        return If(condition, body, elseBody)
+        return If(condition, body, elseBody, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitAssignmentStatement(ctx: AssignmentStatementContext): Statement {
         val name: String = ctx.assignment().variableAccess().Identifier().text
         val value: Expression = ctx.assignment().expression().accept(ExpressionVisitor)
-        return VariableAssignment(name, value)
+        return VariableAssignment(name, value, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitReturnStatement(ctx: ReturnStatementContext): Statement =
-            Return(ctx.expression().accept(ExpressionVisitor))
+            Return(ctx.expression().accept(ExpressionVisitor), ctx.start.line, ctx.start.charPositionInLine)
 
     override fun visitPrintlnStatement(ctx: PrintlnStatementContext): Statement =
-            Println(ctx.arguments().expression().map { it.accept(ExpressionVisitor) })
+            Println(ctx.arguments().expression().map { it.accept(ExpressionVisitor) },
+                    ctx.start.line,
+                    ctx.start.charPositionInLine)
 }
 
 
 private object ExpressionVisitor : LanguageBaseVisitor<Expression>() {
     override fun visitVariableAccessExpression(ctx: VariableAccessExpressionContext): Expression {
         val name: String = ctx.variableAccess().Identifier().text
-        return VariableIdentifier(name)
+        return VariableIdentifier(name, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitBinaryExpression(ctx: BinaryExpressionContext): Expression {
@@ -104,7 +106,7 @@ private object ExpressionVisitor : LanguageBaseVisitor<Expression>() {
         val rightOperand: Expression = ctx.rightOperand.accept(ExpressionVisitor)
         val operator = byString(ctx.operator.text)
 
-        return BinaryExpression(leftOperand, operator, rightOperand)
+        return BinaryExpression(leftOperand, operator, rightOperand, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitParenthesesExpression(ctx: ParenthesesExpressionContext): Expression =
@@ -118,11 +120,11 @@ private object ExpressionVisitor : LanguageBaseVisitor<Expression>() {
                 .expression()
                 .map { it.accept(ExpressionVisitor) }
 
-        return FunctionCall(name, arguments)
+        return FunctionCall(name, arguments, ctx.start.line, ctx.start.charPositionInLine)
     }
 
     override fun visitLiteralExpression(ctx: LiteralExpressionContext): Expression {
         val value = Ints.tryParse(ctx.Literal().text) ?: throw RuntimeException()
-        return ru.spbau.mit.ast.Literal(value)
+        return ru.spbau.mit.ast.Literal(value, ctx.start.line, ctx.start.charPositionInLine)
     }
 }
