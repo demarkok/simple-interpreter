@@ -1,4 +1,4 @@
-# A parser and interpreter for a fictional programming language
+# Parser and interpreter for a fictional programming language
 
 ## How to run?
 * `./build.sh` to download jdk and gradle and build the project.
