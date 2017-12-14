@@ -1,11 +1,26 @@
 package ru.spbau.mit.printer
 
+import org.antlr.v4.runtime.misc.ParseCancellationException
 import org.junit.Test
 import ru.spbau.mit.parse
 import ru.spbau.mit.ast.printer.toPrettyString
 import kotlin.test.assertEquals
 
 class PrinterTest {
+
+    @Test(expected = ParseCancellationException::class)
+    fun parsingExceptionTest() {
+        val s = """
+            |if(1):
+            |   return 4
+            |}
+            |
+            |
+            |""".trimMargin()
+
+        val result = parse(s)
+        print(result)
+    }
 
     @Test
     fun emptyPrintlnTest() {

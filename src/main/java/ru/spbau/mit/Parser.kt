@@ -13,9 +13,17 @@ import ru.spbau.mit.parser.LanguageParser.*
 
 fun parse(sourceCode: String): File {
     val charStream = CharStreams.fromString(sourceCode)
+
     val lexer = LanguageLexer(charStream)
+    lexer.removeErrorListeners()
+    lexer.addErrorListener(ErrorListener)
+
     val tokens = CommonTokenStream(lexer)
+
     val parser = LanguageParser(tokens)
+    parser.removeParseListeners()
+    parser.addErrorListener(ErrorListener)
+
 
     val fileVisitor = FileVisitor
     return fileVisitor.visit(parser.file())
