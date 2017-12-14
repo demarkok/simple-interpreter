@@ -8,7 +8,34 @@ import kotlin.test.assertEquals
 class PrinterTest {
 
     @Test
+    fun emptyPrintlnTest() {
+        val s = "println()"
+        val result = parse(s).toPrettyString()
+        val expected = """
+            |File (1:0)
+            |  Block (1:0)
+            |    Println (1:0)
+            |
+        """.trimMargin()
+        assertEquals(expected, result)
+    }
+
+    @Test
     fun functionWithoutParametersTest() {
+        val s = "fun run() { }"
+        val result = parse(s).toPrettyString()
+        val expected = """
+            |File (1:0)
+            |  Block (1:0)
+            |    Function declaration (1:0), value = run
+            |      Block (1:12)
+            |
+        """.trimMargin()
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun functionCallWithoutParametersTest() {
         val s = "run()"
         val result = parse(s).toPrettyString()
         val expected = """

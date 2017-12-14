@@ -43,7 +43,7 @@ private object StatementVisitor : LanguageBaseVisitor<Statement>() {
         val functionDeclaration = ctx.functionDeclaration()
 
         val name: String = functionDeclaration.Identifier().text
-        val parameters: List<String> = functionDeclaration.parameterNames().Identifier().map { it.text }
+        val parameters: List<String> = functionDeclaration.parameterNames()?.Identifier()?.map { it.text } ?: emptyList()
         val body: Block = functionDeclaration.blockWithBraces().block().accept(BlockVisitor)
 
         return FunctionDeclaration(name, parameters, body, ctx.start.line, ctx.start.charPositionInLine)
@@ -89,7 +89,7 @@ private object StatementVisitor : LanguageBaseVisitor<Statement>() {
             Return(ctx.expression().accept(ExpressionVisitor), ctx.start.line, ctx.start.charPositionInLine)
 
     override fun visitPrintlnStatement(ctx: PrintlnStatementContext): Statement =
-            Println(ctx.arguments().expression().map { it.accept(ExpressionVisitor) },
+            Println(ctx.arguments()?.expression()?.map { it.accept(ExpressionVisitor) } ?: emptyList(),
                     ctx.start.line,
                     ctx.start.charPositionInLine)
 }
