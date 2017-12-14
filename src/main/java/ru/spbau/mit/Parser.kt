@@ -117,8 +117,8 @@ private object ExpressionVisitor : LanguageBaseVisitor<Expression>() {
         val name: String = functionCall.Identifier().text
         val arguments: List<Expression> = functionCall
                 .arguments()
-                .expression()
-                .map { it.accept(ExpressionVisitor) }
+                ?.expression()
+                ?.map { it.accept(ExpressionVisitor) } ?: emptyList()
 
         return FunctionCall(name, arguments, ctx.start.line, ctx.start.charPositionInLine)
     }
