@@ -1,5 +1,6 @@
 package ru.spbau.mit.ast.interpreter
 
+import java.io.InputStream
 import java.io.OutputStream
 
 
@@ -8,11 +9,13 @@ interface ContextInterface {
     fun resolveFunction(name: String): Function?
     val parentContext: Context?
     val outputStream: OutputStream
+    val inputStream: InputStream
 }
 
 class Context(
         override val parentContext: Context?,
         override val outputStream: OutputStream,
+        override val inputStream: InputStream,
         private val variables: Map<String, Variable>,
         private val functions: Map<String, Function>
 ) : ContextInterface {
@@ -25,11 +28,12 @@ class Context(
 class MutableContext( // TODO: refactor: hide the implementation details (Maps)
         override val parentContext: Context?,
         override val outputStream: OutputStream,
+        override val inputStream: InputStream,
         private val variables: MutableMap<String, Variable> = HashMap(),
         private val functions: MutableMap<String, Function> = HashMap()
 ) : ContextInterface {
 
-    constructor(parent: MutableContext) : this(parent.toImmutable(), parent.outputStream)
+    constructor(parent: MutableContext) : this(parent.toImmutable(), parent.outputStream, parent.inputStream)
 
     override fun resolveFunction(name: String): Function? = functions[name] ?: parentContext?.resolveFunction(name)
 
@@ -55,6 +59,6 @@ class MutableContext( // TODO: refactor: hide the implementation details (Maps)
                 .map { x -> x.toPair() }
                 .toTypedArray())
 
-        return Context(parentContext, outputStream, immutableVariables, immutableFunctions)
+        return Context(parentContext, outputStream, inputStream, immutableVariables, immutableFunctions)
     }
 }

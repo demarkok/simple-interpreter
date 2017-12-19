@@ -100,6 +100,9 @@ private object StatementVisitor : LanguageBaseVisitor<Statement>() {
             Println(ctx.arguments()?.expression()?.map { it.accept(ExpressionVisitor) } ?: emptyList(),
                     ctx.start.line,
                     ctx.start.charPositionInLine)
+
+    override fun visitReadStatement(ctx: ReadStatementContext): Statement =
+            Read(ctx.variableAccess().Identifier().text, ctx.start.line, ctx.start.charPositionInLine)
 }
 
 

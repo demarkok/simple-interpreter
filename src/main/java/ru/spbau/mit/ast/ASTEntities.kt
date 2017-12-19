@@ -103,6 +103,12 @@ data class Println(val arguments: List<Expression>, override val line: Int, over
     }
 }
 
+data class Read(val name: String, override val line: Int, override val position: Int) : Statement {
+    override fun <T> accept(visitor: ASTVisitor<T>): T {
+        return visitor.visit(this)
+    }
+}
+
 interface Expression : Statement
 
 data class FunctionCall(val name: String,

@@ -1,9 +1,9 @@
 package ru.spbau.mit.ast.interpreter
 
 import ru.spbau.mit.ast.*
-import ru.spbau.mit.ast.ASTVisitor
 import ru.spbau.mit.exceptions.RedeclarationException
 import ru.spbau.mit.exceptions.UnexpectedReturnException
+import java.util.*
 
 class EvaluationVisitor(context: MutableContext) : ASTVisitor<EvaluationResult> {
 
@@ -98,6 +98,14 @@ class EvaluationVisitor(context: MutableContext) : ASTVisitor<EvaluationResult> 
         return None
     }
 
+    override fun visit(read: Read): EvaluationResult {
+        val value = Scanner(topContext().inputStream).nextInt()
+        val variable = topContext().resolveVariableOrThrow(read.name)
+        variable.value = value
+        return None
+    }
+
+
     override fun visit(binaryExpression: BinaryExpression): EvaluationResult {
         val leftOperand = binaryExpression.leftOperand
         val operator = binaryExpression.operator
@@ -115,7 +123,7 @@ class EvaluationVisitor(context: MutableContext) : ASTVisitor<EvaluationResult> 
 
         val function = topContext().resolveFunctionOrThrow(name)
 
-        val callContext = MutableContext(function.declarationContext, topContext().outputStream)
+        val callContext = MutableContext(function.declarationContext, topContext().outputStream, topContext().inputStream)
         callContext.addFunction(name, function)
 
         arguments.map { it.accept(this) }

@@ -38,6 +38,10 @@ statement
 
     |   'println' '(' arguments? ')'
     #   printlnStatement
+
+    |   'read' '(' variableAccess ')'
+    #   readStatement
+
     ;
 
 functionDeclaration
@@ -104,6 +108,7 @@ FUN           : 'fun';
 VAR           : 'var';
 RETURN        : 'return';
 PRINTLN       : 'println';
+READ          : 'read';
 
 
 LPAREN          : '(';

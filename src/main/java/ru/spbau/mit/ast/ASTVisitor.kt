@@ -10,6 +10,7 @@ interface ASTVisitor<out T> {
     fun visit(variableAssignment: VariableAssignment): T
     fun visit(returnStatement: Return): T
     fun visit(println: Println): T
+    fun visit(read: Read): T
     fun visit(binaryExpression: BinaryExpression): T
     fun visit(functionCall: FunctionCall): T
     fun visit(variableIdentifier: VariableIdentifier): T

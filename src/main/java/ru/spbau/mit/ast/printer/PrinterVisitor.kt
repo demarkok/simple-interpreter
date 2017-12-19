@@ -62,6 +62,10 @@ class PrinterVisitor(private val out: Appendable): ASTVisitor<Unit> {
         }
     }
 
+    override fun visit(read: Read) {
+        appendEntityWithValue(read, "Read", read.name)
+    }
+
     override fun visit(binaryExpression: BinaryExpression) {
         appendEntityWithValue(binaryExpression, "Binary expression", binaryExpression.operator.name)
         withIndent {

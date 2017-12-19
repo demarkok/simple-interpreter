@@ -8,6 +8,19 @@ import kotlin.test.assertEquals
 
 class PrinterTest {
 
+    @Test
+    fun readTest() {
+        val s = "read(x)"
+        val result = parse(s).toPrettyString()
+        val expected = """
+            |File (1:0)
+            |  Block (1:0)
+            |    Read (1:0), value = x
+            |
+        """.trimMargin()
+        assertEquals(expected, result)
+    }
+
     @Test(expected = ParseCancellationException::class)
     fun parsingExceptionTest() {
         val s = """
@@ -18,8 +31,7 @@ class PrinterTest {
             |
             |""".trimMargin()
 
-        val result = parse(s)
-        print(result)
+        parse(s)
     }
 
     @Test
