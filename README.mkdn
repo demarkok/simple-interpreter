@@ -24,7 +24,7 @@ EXPRESSION = FUNCTION_CALL | BINARY_EXPRESSION | IDENTIFIER | LITERAL | "(" EXPR
 FUNCTION_CALL = IDENTIFIER "(" ARGUMENTS ")"
 ARGUMENTS = EXPRESSION{","}
 BINARY_EXPRESSION = EXPRESSION OPERATOR EXPRESSION
-OPERATOR =  "+" | "-" | "*" | "/" | "%" | ">" | "<" | ">=" | "<=" | "==" | "!=" | "||" | "&&"
+OPERATOR =  "+" | "-" | "*" | "/" | "%" | ">" | "<" | ">=" | "<=" | "==" | "!=" | "||" | "&&" // priority is natural
 IDENTIFIER = <like in C>
 LITERAL = <like decimal literal in Java>
 
