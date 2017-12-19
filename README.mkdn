@@ -38,6 +38,7 @@ X{Y} – possibly empty list of X's separeted by Y's
 ```
 
 ## Semantics
+- Natural operator precedence.
 - One line comments support (`//`).
 - Functions are available after declaration, within the scope where they were declared.
 - Function overloading isn't supported.
